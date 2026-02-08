@@ -5,6 +5,67 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Shield, Loader2, AlertCircle, CheckCircle2, MapPin, FileText, Users } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+// Loading Screen Component
+function LoadingScreen() {
+  return (
+    <div className="fixed inset-0 z-50 bg-gradient-to-b from-primary to-blue-700 flex flex-col items-center justify-center">
+      {/* Decorative background circles */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-white/10 animate-pulse" />
+        <div className="absolute -left-16 top-1/4 w-48 h-48 rounded-full bg-white/5" />
+        <div className="absolute right-10 bottom-1/4 w-32 h-32 rounded-full bg-white/10 animate-pulse" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute -left-10 -bottom-10 w-56 h-56 rounded-full bg-white/5" />
+      </div>
+
+      {/* Main content */}
+      <div className="relative flex flex-col items-center">
+        {/* Logo with animation */}
+        <div className="relative">
+          {/* Outer ring animation */}
+          <div className="absolute inset-0 w-32 h-32 rounded-full border-4 border-white/30 animate-ping" style={{ animationDuration: '2s' }} />
+          <div className="absolute inset-0 w-32 h-32 rounded-full border-2 border-white/20 animate-spin" style={{ animationDuration: '8s' }} />
+          
+          {/* Logo container */}
+          <div className="w-32 h-32 rounded-full bg-white shadow-2xl flex items-center justify-center animate-pulse" style={{ animationDuration: '2s' }}>
+            <img 
+              src="/municipal-logo.png" 
+              alt="Municipal Corporation" 
+              className="w-24 h-24 object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                target.parentElement!.innerHTML = '<div class="text-primary font-bold text-3xl">MC</div>';
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Text */}
+        <div className="mt-8 text-center">
+          <h1 className="text-2xl font-bold text-white tracking-tight">Municipal Corporation</h1>
+          <p className="text-white/70 mt-1 text-sm">Halisahar</p>
+        </div>
+
+        {/* Loading indicator */}
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-white animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-2.5 h-2.5 rounded-full bg-white animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-2.5 h-2.5 rounded-full bg-white animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+          <p className="text-white/80 text-sm font-medium">Signing you in...</p>
+        </div>
+
+        {/* Trust badge */}
+        <div className="mt-12 flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+          <Shield className="w-4 h-4 text-white" />
+          <span className="text-white/90 text-xs font-medium">Secure Government Portal</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const { loginWithGoogle, user } = useAuth();
@@ -35,7 +96,6 @@ export default function Login() {
     } catch (err: any) {
       console.error('Frontend Login Error:', err);
       setError(err.response?.data?.message || err.message || "Login failed. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -45,6 +105,11 @@ export default function Login() {
     { icon: FileText, text: 'Track complaint status in real-time' },
     { icon: CheckCircle2, text: 'Get notified when solved' },
   ];
+
+  // Show loading screen when authenticating
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background flex flex-col">
@@ -58,8 +123,17 @@ export default function Login() {
         </div>
         
         <div className="relative animate-fade-in">
-          <div className="w-20 h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 border border-white/30 shadow-lg">
-            <Shield className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 border border-white/30 shadow-lg overflow-hidden">
+            <img 
+              src="/municipal-logo.png" 
+              alt="Municipal Logo" 
+              className="w-14 h-14 object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                target.parentElement!.innerHTML = '<svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+              }}
+            />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Halisahar Civic Portal</h1>
           <p className="text-primary-foreground/80 mt-2 text-lg">Report and track local problems</p>
@@ -108,23 +182,16 @@ export default function Login() {
           )}
 
           <div className="flex flex-col items-center gap-4">
-            {loading ? (
-              <div className="flex flex-col items-center gap-2 py-4">
-                <Loader2 className="w-10 h-10 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Signing you in...</p>
-              </div>
-            ) : (
-              <div className="w-full flex justify-center py-2">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => setError("Google Login Failed")}
-                  useOneTap
-                  shape="pill"
-                  size="large"
-                  width={280}
-                />
-              </div>
-            )}
+            <div className="w-full flex justify-center py-2">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError("Google Login Failed")}
+                useOneTap
+                shape="pill"
+                size="large"
+                width={280}
+              />
+            </div>
           </div>
           
           <p className="text-center text-xs text-muted-foreground">
