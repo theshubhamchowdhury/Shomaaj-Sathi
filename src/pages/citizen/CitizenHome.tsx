@@ -2,7 +2,7 @@ import { StatsCard } from '@/components/citizen/StatsCard';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useComplaints } from '@/contexts/ComplaintsContext';
-import { PlusCircle, ArrowRight, MapPin, Phone, Sparkles, Clock, CheckCircle2, Award, User, Calendar } from 'lucide-react';
+import { PlusCircle, ArrowRight, MapPin, Phone, Sparkles, Clock, CheckCircle2, Award, User, Calendar, Camera, Building2, Landmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { COMPLAINT_CATEGORIES } from '@/types';
 import { format } from 'date-fns';
@@ -43,41 +43,69 @@ export default function CitizenHome() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30">
       {/* Greeting Section */}
-      <div className="bg-gradient-to-r from-primary to-blue-600 px-4 py-5">
+      <div className="bg-gradient-to-r from-primary to-teal-600 px-4 py-5">
         <div className="max-w-lg mx-auto">
           <p className="text-white/80 text-sm font-medium">Welcome back,</p>
           <h2 className="text-xl font-bold text-white mt-0.5">{user?.name || 'Citizen'}</h2>
           <div className="flex items-center gap-2 mt-2">
             <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white">
-              📍 Ward {user?.wardNumber || '-'}
+              <Building2 className="w-3.5 h-3.5" />
+              Ward {user?.wardNumber || '-'}
             </span>
             <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white">
-              🏛️ Halisahar
+              <Landmark className="w-3.5 h-3.5" />
+              Halisahar
             </span>
           </div>
         </div>
       </div>
 
       <main className="px-4 py-6 space-y-6 max-w-lg mx-auto pb-8">
-        {/* Quick Action Card */}
-        <div className="bg-gradient-to-r from-primary to-blue-600 rounded-2xl p-5 shadow-lg animate-fade-in">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+        {/* Quick Action Card - Professional & Eye-catching */}
+        <div className="relative bg-gradient-to-r from-primary via-teal-500 to-emerald-500 rounded-2xl p-4 shadow-lg animate-fade-in overflow-hidden">
+          {/* Subtle background decoration */}
+          <div className="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-white/10" />
+          <div className="absolute -left-4 -bottom-4 w-14 h-14 rounded-full bg-white/10" />
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-4">
+              {/* Icon */}
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                <Building2 className="w-6 h-6 text-primary" />
+              </div>
+              
+              {/* Text */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-bold text-lg">Report an Issue</h3>
+                <p className="text-white/90 text-sm font-medium">Help Improve Your Ward!</p>
+              </div>
+              
+              {/* Arrow Button */}
+              <Button
+                onClick={() => navigate('/citizen/register')}
+                className="w-12 h-12 bg-white text-primary hover:bg-white/90 rounded-xl shadow-md p-0 flex-shrink-0"
+                size="icon"
+              >
+                <PlusCircle className="w-6 h-6" />
+              </Button>
             </div>
-            <div>
-              <h3 className="text-white font-semibold">Report an Issue</h3>
-              <p className="text-white/70 text-sm">Help improve your ward</p>
+            
+            {/* Feature Icons */}
+            <div className="flex items-center justify-center gap-6 mt-3 pt-3 border-t border-white/20">
+              <div className="flex items-center gap-1.5 text-white/90 text-xs font-medium">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>Location</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-white/90 text-xs font-medium">
+                <Camera className="w-3.5 h-3.5" />
+                <span>Photo</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-white/90 text-xs font-medium">
+                <Building2 className="w-3.5 h-3.5" />
+                <span>Ward</span>
+              </div>
             </div>
           </div>
-          <Button
-            onClick={() => navigate('/citizen/register')}
-            className="w-full h-12 bg-white text-primary hover:bg-white/90 font-semibold rounded-xl shadow-md"
-            size="lg"
-          >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            Register New Complaint
-          </Button>
         </div>
 
         {/* Stats Grid */}
@@ -153,7 +181,7 @@ export default function CitizenHome() {
                               complaint.status === 'pending'
                                 ? 'bg-amber-100 text-amber-700'
                                 : complaint.status === 'in-progress'
-                                ? 'bg-blue-100 text-blue-700'
+                                ? 'bg-teal-100 text-teal-700'
                                 : 'bg-green-100 text-green-700'
                             }`}
                           >
@@ -257,7 +285,7 @@ export default function CitizenHome() {
             {/* Leader Card */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all">
               {/* Large Leader Photo */}
-              <div className="relative w-full h-72 bg-gradient-to-br from-blue-100 to-indigo-100">
+              <div className="relative w-full h-72 bg-gradient-to-br from-teal-100 to-emerald-100">
                 <img
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&h=800&fit=crop"
                   alt="Hon. Ramesh Verma"

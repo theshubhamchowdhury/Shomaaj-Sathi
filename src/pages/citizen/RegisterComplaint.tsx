@@ -16,7 +16,7 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useComplaints } from '@/contexts/ComplaintsContext';
 import { ComplaintCategory, WARD_NUMBERS } from '@/types';
-import { MapPin, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { MapPin, Loader2, CheckCircle, AlertCircle, Camera, Navigation, Building2, ClipboardList, Send, PenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function RegisterComplaint() {
@@ -139,7 +139,8 @@ export default function RegisterComplaint() {
           {/* Image Upload */}
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
-              📸 Photos of Problem
+              <Camera className="w-4 h-4 text-primary" />
+              Photos of Problem
               <span className="text-destructive">*</span>
             </Label>
             <ImageUpload value={images} onChange={setImages} token={token || undefined} maxImages={4} />
@@ -149,7 +150,8 @@ export default function RegisterComplaint() {
           {/* Location */}
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
-              📍 Location
+              <MapPin className="w-4 h-4 text-primary" />
+              Location
               <span className="text-destructive">*</span>
             </Label>
             <div className="bg-gradient-to-r from-secondary to-secondary/50 rounded-xl p-4 border border-border/50">
@@ -175,8 +177,9 @@ export default function RegisterComplaint() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">{address}</p>
-                    <p className="text-xs text-muted-foreground mt-1 font-mono">
-                      📌 {latitude?.toFixed(6)}, {longitude?.toFixed(6)}
+                    <p className="text-xs text-muted-foreground mt-1 font-mono flex items-center gap-1">
+                      <Navigation className="w-3 h-3" />
+                      {latitude?.toFixed(6)}, {longitude?.toFixed(6)}
                     </p>
                   </div>
                 </div>
@@ -192,7 +195,8 @@ export default function RegisterComplaint() {
           {/* Ward Number */}
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
-              🏘️ Ward Number
+              <Building2 className="w-4 h-4 text-primary" />
+              Ward Number
               <span className="text-destructive">*</span>
             </Label>
             <Select value={wardNumber} onValueChange={setWardNumber}>
@@ -213,7 +217,8 @@ export default function RegisterComplaint() {
           {/* Category */}
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
-              📋 Problem Category
+              <ClipboardList className="w-4 h-4 text-primary" />
+              Problem Category
               <span className="text-destructive">*</span>
             </Label>
             <CategorySelect value={category} onChange={setCategory} />
@@ -223,7 +228,8 @@ export default function RegisterComplaint() {
           {category === 'other' && (
             <div className="space-y-3 animate-slide-up">
               <Label className="text-base font-bold flex items-center gap-2">
-                ✏️ Describe the Problem
+                <PenLine className="w-4 h-4 text-primary" />
+                Describe the Problem
                 <span className="text-destructive">*</span>
               </Label>
               <Textarea
@@ -238,7 +244,7 @@ export default function RegisterComplaint() {
           {/* Submit */}
           <Button
             type="submit"
-            className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90"
+            className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg bg-gradient-to-r from-primary to-teal-600 hover:from-primary/90 hover:to-teal-600/90"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -247,7 +253,10 @@ export default function RegisterComplaint() {
                 Submitting...
               </>
             ) : (
-              '🚀 Submit Complaint'
+              <>
+                <Send className="w-5 h-5 mr-2" />
+                Submit Complaint
+              </>
             )}
           </Button>
         </form>

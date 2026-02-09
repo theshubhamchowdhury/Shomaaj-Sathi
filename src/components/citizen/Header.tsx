@@ -31,9 +31,9 @@ export function Header() {
         {/* Left Section - Logo and Title */}
         <div className="flex items-center gap-3">
           {/* Municipal Logo */}
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-md overflow-hidden border-2 border-primary/20">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center shadow-md overflow-hidden border-2 border-primary/20">
             <img 
-              src="/municipal-logo.png" 
+              src="/munilogo.png"  //yaha par change krna logo 
               alt="Municipal Logo" 
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -47,7 +47,7 @@ export function Header() {
           {/* Title and Subtitle */}
           <div className="flex flex-col">
             <h1 className="text-base font-bold text-primary leading-tight tracking-tight">
-              Municipal Corporation
+              Halisahar Municipality
             </h1>
             <p className="text-xs text-gray-500 leading-tight">
               Building a Better Tomorrow

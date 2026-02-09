@@ -32,7 +32,7 @@ export default function CitizenProfile() {
                   className="w-24 h-24 rounded-full object-cover border-4 border-primary/20 shadow-lg" 
                 />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center shadow-lg">
                   <User className="w-12 h-12 text-white" />
                 </div>
               )}

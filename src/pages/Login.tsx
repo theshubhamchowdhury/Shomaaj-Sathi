@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 // Loading Screen Component
 function LoadingScreen() {
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-b from-primary to-blue-700 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-gradient-to-b from-primary to-teal-700 flex flex-col items-center justify-center">
       {/* Decorative background circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-white/10 animate-pulse" />

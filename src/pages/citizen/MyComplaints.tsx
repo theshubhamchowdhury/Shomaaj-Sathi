@@ -40,7 +40,7 @@ export default function MyComplaints() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30">
       {/* Eye-catching Banner */}
-      <div className="bg-gradient-to-r from-primary via-blue-600 to-primary px-4 py-6 shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary via-teal-600 to-primary px-4 py-6 shadow-xl relative overflow-hidden">
         {/* Decorative circles */}
         <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10" />
         <div className="absolute -left-4 -bottom-4 w-24 h-24 rounded-full bg-white/10" />
@@ -65,9 +65,9 @@ export default function MyComplaints() {
             <div className="text-2xl font-bold text-amber-700">{complaints.filter(c => c.status === 'pending').length}</div>
             <div className="text-xs font-semibold text-amber-600 mt-1">Pending</div>
           </div>
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center border border-blue-200">
-            <div className="text-2xl font-bold text-blue-700">{complaints.filter(c => c.status === 'in-progress').length}</div>
-            <div className="text-xs font-semibold text-blue-600 mt-1">In Progress</div>
+          <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl p-4 text-center border border-teal-200">
+            <div className="text-2xl font-bold text-teal-700">{complaints.filter(c => c.status === 'in-progress').length}</div>
+            <div className="text-xs font-semibold text-teal-600 mt-1">In Progress</div>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 text-center border border-green-200">
             <div className="text-2xl font-bold text-green-700">{complaints.filter(c => c.status === 'solved').length}</div>
@@ -190,7 +190,7 @@ export default function MyComplaints() {
                     className={cn(
                       'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold',
                       selectedComplaint.status === 'pending' && 'bg-amber-100 text-amber-700',
-                      selectedComplaint.status === 'in-progress' && 'bg-blue-100 text-blue-700',
+                      selectedComplaint.status === 'in-progress' && 'bg-teal-100 text-teal-700',
                       selectedComplaint.status === 'solved' && 'bg-green-100 text-green-700'
                     )}
                   >

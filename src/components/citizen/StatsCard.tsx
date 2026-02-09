@@ -20,9 +20,9 @@ export function StatsCard({ label, value, variant }: StatsCardProps) {
       iconBg: 'bg-amber-100 text-status-pending',
     },
     progress: {
-      bg: 'bg-gradient-to-br from-status-progress-bg to-blue-50 border-status-progress/20',
+      bg: 'bg-gradient-to-br from-status-progress-bg to-teal-50 border-status-progress/20',
       icon: Loader2,
-      iconBg: 'bg-blue-100 text-status-progress',
+      iconBg: 'bg-teal-100 text-status-progress',
     },
     solved: {
       bg: 'bg-gradient-to-br from-status-solved-bg to-green-50 border-status-solved/20',

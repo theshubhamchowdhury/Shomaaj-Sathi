@@ -23,9 +23,9 @@ export function ComplaintCard({ complaint, onClick }: ComplaintCardProps) {
     'in-progress': {
       label: 'In Progress',
       icon: Loader2,
-      bgClass: 'bg-blue-100 text-blue-700 border-blue-200',
-      dotClass: 'bg-blue-500',
-      progressColor: 'bg-blue-500',
+      bgClass: 'bg-teal-100 text-teal-700 border-teal-200',
+      dotClass: 'bg-teal-500',
+      progressColor: 'bg-teal-500',
       progress: 66
     },
     solved: {
@@ -129,7 +129,7 @@ export function ComplaintCard({ complaint, onClick }: ComplaintCardProps) {
           className={cn(
             'w-full py-2.5 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2',
             complaint.status === 'pending' && 'bg-amber-500 hover:bg-amber-600 text-white shadow-md hover:shadow-lg',
-            complaint.status === 'in-progress' && 'bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg',
+            complaint.status === 'in-progress' && 'bg-teal-500 hover:bg-teal-600 text-white shadow-md hover:shadow-lg',
             complaint.status === 'solved' && 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'
           )}
         >
