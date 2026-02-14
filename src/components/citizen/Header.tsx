@@ -51,7 +51,7 @@ useEffect(() => {
       const token = localStorage.getItem("token");
 
       const userRes = await axios.get(
-        "http://localhost:5000/api/user/me",
+        "https://shomaaj-sathi.onrender.com/api/user/me",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ useEffect(() => {
       const wardNumber = userRes.data.wardNumber;
 
       const alertRes = await axios.get(
-        `http://localhost:5000/api/alerts/${wardNumber}`
+        `https://shomaaj-sathi.onrender.com/api/alerts/${wardNumber}`
       );
 
       setNotifications(alertRes.data);
