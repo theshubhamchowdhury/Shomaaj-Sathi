@@ -99,31 +99,39 @@ app.post('/api/auth/google', async (req, res) => {
     const { sub: googleId, email, name, picture } = payload;
 
     let user = await User.findOne({ googleId });
+// List of admin emails
+const adminEmails = [
+  'theshubhamchowdhury01@gmail.com',
+  'jyotishyadavcse@gmail.com'  
+];
 
-    if (!user) {
-      // Auto-assign admin role for specific email
-      const isAdmin = email === 'theshubhamchowdhury01@gmail.com';
-      user = new User({
-        googleId,
-        email,
-        name,
-        photo: picture,
-        role: isAdmin ? 'admin' : 'citizen',
-        isVerified: isAdmin, // Admin is auto-verified
-        isProfileComplete: isAdmin, // Admin doesn't need profile setupsa
-      });
-      await user.save();
-      console.log('Created new user:', email, isAdmin ? '(ADMIN)' : '');
-    } else {
-      // Upgrade existing user to admin if they have the admin email
-      if (email === 'theshubhamchowdhury01@gmail.com' && user.role !== 'admin') {
-        user.role = 'admin';
-        user.isVerified = true;
-        user.isProfileComplete = true;
-        await user.save();
-        console.log('Upgraded existing user to admin:', email);
-      }
-    }
+if (!user) {
+  const isAdmin = adminEmails.includes(email);
+
+  user = new User({
+    googleId,
+    email,
+    name,
+    photo: picture,
+    role: isAdmin ? 'admin' : 'citizen',
+    isVerified: isAdmin,
+    isProfileComplete: isAdmin,
+  });
+
+  await user.save();
+  console.log('Created new user:', email, isAdmin ? '(ADMIN)' : '');
+
+} else {
+  // Upgrade existing user if email is in admin list
+  if (adminEmails.includes(email) && user.role !== 'admin') {
+    user.role = 'admin';
+    user.isVerified = true;
+    user.isProfileComplete = true;
+    await user.save();
+    console.log('Upgraded existing user to admin:', email);
+  }
+}
+
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
     res.json({ token, user });
