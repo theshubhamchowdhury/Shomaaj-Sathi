@@ -23,6 +23,8 @@ import {
   Camera,
   Upload,
   X,
+  Trash2,
+  Mic,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -45,7 +47,7 @@ import {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { complaints, getStats, updateComplaintStatus } = useComplaints();
+  const { complaints, getStats, updateComplaintStatus, deleteComplaint } = useComplaints();
   const { logout, token } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'alerts'>('dashboard');
@@ -263,6 +265,14 @@ export default function AdminDashboard() {
 
   const handleUpdateStatus = async () => {
     if (!selectedComplaint) return;
+    if (newStatus === 'solved' && !solutionImage) {
+      alert('Please upload proof image before marking as solved');
+      return;
+    }
+    if (newStatus === 'solved' && !resolutionNote.trim()) {
+      alert('Please provide a resolution note before marking as solved');
+      return;
+    }
     setIsUpdating(true);
     try {
       await updateComplaintStatus(
@@ -539,7 +549,7 @@ export default function AdminDashboard() {
                           <td className="p-4 text-sm text-muted-foreground">
                             {format(complaint.createdAt, 'dd MMM yyyy')}
                           </td>
-                          <td className="p-4">
+                          <td className="p-4 space-x-2">
                             <Button
                               size="sm"
                               variant="outline"
@@ -549,6 +559,22 @@ export default function AdminDashboard() {
                               }}
                             >
                               View
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={async () => {
+                                const confirmDelete = window.confirm('Are you sure you want to delete this complaint?');
+                                if (!confirmDelete) return;
+                                try {
+                                  await deleteComplaint(complaint.id);
+                                } catch (error) {
+                                  console.error(error);
+                                  alert('Failed to delete complaint');
+                                }
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </td>
                         </tr>
@@ -852,6 +878,20 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
+                    {/* Voice Note */}
+                    {selectedComplaint.voiceNoteUrl && (
+                      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-xl border border-blue-200 dark:border-blue-800">
+                        <p className="text-sm font-medium text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2">
+                          <Mic className="w-4 h-4" /> Voice Note from Citizen
+                        </p>
+                        <audio controls className="w-full">
+                          <source src={selectedComplaint.voiceNoteUrl} type="audio/webm" />
+                          <source src={selectedComplaint.voiceNoteUrl} type="audio/mp4" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
+
                     {/* Show solution if already solved */}
                     {selectedComplaint.status === 'solved' && selectedComplaint.solutionImageUrl && (
                       <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/30 rounded-xl border border-green-200 dark:border-green-800">
@@ -901,7 +941,7 @@ export default function AdminDashboard() {
                     {newStatus === 'solved' && (
                       <>
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Upload Solution Image</label>
+                          <label className="text-sm font-medium">Upload Solution Image <span className="text-destructive">*</span></label>
                           {solutionImage ? (
                             <div className="relative rounded-xl overflow-hidden bg-muted">
                               <img src={solutionImage} alt="Solution" className="w-full h-40 object-contain" />
@@ -938,7 +978,7 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Resolution Note (optional)</label>
+                          <label className="text-sm font-medium">Resolution Note <span className="text-destructive">*</span></label>
                           <Textarea
                             placeholder="Describe the solution..."
                             value={resolutionNote}
@@ -951,7 +991,7 @@ export default function AdminDashboard() {
                     <Button
                       className="w-full"
                       onClick={handleUpdateStatus}
-                      disabled={isUpdating}
+                      disabled={isUpdating || (newStatus === 'solved' && (!solutionImage || !resolutionNote.trim()))}
                     >
                       {isUpdating ? (
                         <Loader2 className="w-4 h-4 animate-spin" />

@@ -35,6 +35,19 @@ const upload = multer({
   }
 });
 
+// Multer for audio uploads
+const uploadAudio = multer({ 
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit for audio
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('audio/') || file.mimetype === 'video/webm') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only audio files are allowed'), false);
+    }
+  }
+});
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -82,6 +95,30 @@ app.post('/api/upload', authenticateToken, upload.single('image'), async (req, r
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({ message: 'Upload failed', details: error.message });
+  }
+});
+
+// Audio Upload Route
+app.post('/api/upload-audio', authenticateToken, uploadAudio.single('audio'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No audio file uploaded' });
+    }
+
+    // Convert buffer to base64 data URI
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: 'halisahar-connect/voice-notes',
+      resource_type: 'video' // Cloudinary uses 'video' resource type for audio files
+    });
+
+    res.json({ url: result.secure_url });
+  } catch (error) {
+    console.error('Audio upload error:', error);
+    res.status(500).json({ message: 'Audio upload failed', details: error.message });
   }
 });
 
@@ -380,6 +417,17 @@ app.put('/api/admin/complaints/:id', authenticateToken, async (req, res) => {
     res.json(complaint);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+// Admin: Delete Complaint
+app.delete('/api/admin/complaints/:id', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ message: 'Unauthorized' });
+    await Complaint.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Complaint deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

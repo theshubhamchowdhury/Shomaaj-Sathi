@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ImageUpload } from '@/components/citizen/ImageUpload';
+import { VoiceRecorder } from '@/components/citizen/VoiceRecorder';
 import { CategorySelect } from '@/components/citizen/CategorySelect';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,16 +18,18 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useComplaints } from '@/contexts/ComplaintsContext';
 import { ComplaintCategory, WARD_NUMBERS } from '@/types';
-import { MapPin, Loader2, CheckCircle, AlertCircle, Camera, Navigation, Building2, ClipboardList, Send, PenLine } from 'lucide-react';
+import { MapPin, Loader2, CheckCircle, AlertCircle, Camera, Navigation, Building2, ClipboardList, Send, PenLine, Mic } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function RegisterComplaint() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, token } = useAuth();
   const { addComplaint } = useComplaints();
   const { latitude, longitude, address, loading: locationLoading, error: locationError, getLocation } = useGeolocation();
 
   const [images, setImages] = useState<string[]>([]);
+  const [voiceNote, setVoiceNote] = useState<string>('');
   const [category, setCategory] = useState<ComplaintCategory | null>(null);
   const [otherDescription, setOtherDescription] = useState('');
   const [wardNumber, setWardNumber] = useState<string>(user?.wardNumber?.toString() || '');
@@ -68,6 +72,7 @@ export default function RegisterComplaint() {
         otherDescription: category === 'other' ? otherDescription : undefined,
         imageUrl: images[0],
         imageUrls: images,
+        voiceNoteUrl: voiceNote || undefined,
         latitude,
         longitude,
         address: address || 'Location captured',
@@ -89,9 +94,9 @@ export default function RegisterComplaint() {
             <CheckCircle className="w-10 h-10 text-status-solved" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Success!</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('success')}</h1>
             <p className="text-muted-foreground mt-2">
-              Your complaint has been successfully submitted.
+              {t('complaintSubmitted')}
             </p>
           </div>
           <div className="space-y-3">
@@ -100,7 +105,7 @@ export default function RegisterComplaint() {
               className="w-full h-12 rounded-xl font-semibold"
               size="lg"
             >
-              View My Complaints
+              {t('viewMyComplaints')}
             </Button>
             <Button
               variant="outline"
@@ -108,7 +113,7 @@ export default function RegisterComplaint() {
               className="w-full h-12 rounded-xl font-semibold"
               size="lg"
             >
-              Go to Home
+              {t('goToHome')}
             </Button>
           </div>
         </div>
@@ -120,7 +125,7 @@ export default function RegisterComplaint() {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30">
       {/* Page Title */}
       <div className="bg-white border-b border-gray-100 px-4 py-4">
-        <h1 className="text-xl font-bold text-gray-900 max-w-lg mx-auto">Register Complaint</h1>
+        <h1 className="text-xl font-bold text-gray-900 max-w-lg mx-auto">{t('registerComplaint')}</h1>
       </div>
 
       <main className="px-4 py-6 max-w-lg mx-auto pb-8">
@@ -140,25 +145,25 @@ export default function RegisterComplaint() {
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
               <Camera className="w-4 h-4 text-primary" />
-              Photos of Problem
+              {t('photosOfProblem')}
               <span className="text-destructive">*</span>
             </Label>
             <ImageUpload value={images} onChange={setImages} token={token || undefined} maxImages={4} />
-            <p className="text-xs text-muted-foreground">Upload up to 4 clear photos showing the problem</p>
+            <p className="text-xs text-muted-foreground">{t('uploadPhotos')}</p>
           </div>
 
           {/* Location */}
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
               <MapPin className="w-4 h-4 text-primary" />
-              Location
+              {t('currentLocation')}
               <span className="text-destructive">*</span>
             </Label>
             <div className="bg-gradient-to-r from-secondary to-secondary/50 rounded-xl p-4 border border-border/50">
               {locationLoading ? (
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                  <span className="font-medium">Getting your location...</span>
+                  <span className="font-medium">{t('gettingLocation')}</span>
                 </div>
               ) : locationError ? (
                 <div className="space-y-3">
@@ -196,17 +201,17 @@ export default function RegisterComplaint() {
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
               <Building2 className="w-4 h-4 text-primary" />
-              Ward Number
+              {t('wardNumber')}
               <span className="text-destructive">*</span>
             </Label>
             <Select value={wardNumber} onValueChange={setWardNumber}>
               <SelectTrigger className="h-14 rounded-xl bg-secondary/50 border-border/50 font-medium">
-                <SelectValue placeholder="Select your ward" />
+                <SelectValue placeholder={t('selectWard')} />
               </SelectTrigger>
               <SelectContent>
                 {WARD_NUMBERS.map((num) => (
                   <SelectItem key={num} value={num.toString()}>
-                    Ward {num}
+                    {t('ward')} {num}
                   </SelectItem>
                 ))
                 }
@@ -218,10 +223,20 @@ export default function RegisterComplaint() {
           <div className="space-y-3">
             <Label className="text-base font-bold flex items-center gap-2">
               <ClipboardList className="w-4 h-4 text-primary" />
-              Problem Category
+              {t('selectCategory')}
               <span className="text-destructive">*</span>
             </Label>
             <CategorySelect value={category} onChange={setCategory} />
+          </div>
+
+          {/* Voice Note */}
+          <div className="space-y-3">
+            <Label className="text-base font-bold flex items-center gap-2">
+              <Mic className="w-4 h-4 text-primary" />
+              Voice Note (Optional)
+            </Label>
+            <VoiceRecorder value={voiceNote} onChange={setVoiceNote} token={token || undefined} />
+            <p className="text-xs text-muted-foreground">For citizens who can't type, record your problem</p>
           </div>
 
           {/* Other Description */}
@@ -229,13 +244,13 @@ export default function RegisterComplaint() {
             <div className="space-y-3 animate-slide-up">
               <Label className="text-base font-bold flex items-center gap-2">
                 <PenLine className="w-4 h-4 text-primary" />
-                Describe the Problem
+                {t('describeIssue')}
                 <span className="text-destructive">*</span>
               </Label>
               <Textarea
                 value={otherDescription}
                 onChange={(e) => setOtherDescription(e.target.value)}
-                placeholder="Please describe your problem in detail..."
+                placeholder={t('describeIssue')}
                 className="min-h-[120px] rounded-xl bg-secondary/50 border-border/50"
               />
             </div>
@@ -250,12 +265,12 @@ export default function RegisterComplaint() {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                Submitting...
+                {t('loading')}
               </>
             ) : (
               <>
                 <Send className="w-5 h-5 mr-2" />
-                Submit Complaint
+                {t('submitComplaint')}
               </>
             )}
           </Button>

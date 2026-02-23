@@ -19,6 +19,9 @@ export interface User {
   photo?: string;
   aadharPhoto?: string;
   wardNumber?: number;
+  language?: string;
+  district?: string;
+  municipality?: string;
   role: UserRole;
   isVerified: boolean;
   isProfileComplete: boolean;
@@ -31,6 +34,7 @@ export interface Complaint {
   otherDescription?: string;
   imageUrl: string;
   imageUrls?: string[];
+  voiceNoteUrl?: string;
   solutionImageUrl?: string;
   latitude: number;
   longitude: number;
